@@ -1,6 +1,6 @@
 from mongoengine import connect, Document, StringField, DateTimeField
 from fastapi import FastAPI, HTTPException
-
+from pydantic import BaseModel
 import datetime
 import json
 app = FastAPI()
@@ -13,20 +13,25 @@ class DataModel(Document):
     clientName = StringField(required=True, max_length=200)
     created = StringField(default=f"{datetime.date.today()}")
     
+class DataRequest(BaseModel):
+    appname: str
+    datajson: str
+    clientName: str
     
 @app.post("/api/v1/create-data")
-async def createData(appname:str, datajson: str, clientName: str):
-    findData = DataModel.objects(clientName=clientName).first()
+async def createData(dataModel: DataRequest):
+    findData = DataModel.objects(clientName=dataModel.clientName).first()
     if findData:
         findData.delete()
-        data = DataModel(appname=appname, datajson=datajson, clientName=clientName)
+        data = DataModel(appname=dataModel.appname, datajson=dataModel.datajson, clientName=dataModel.clientName)
         data = data.save()
         return {
             "message":"Thank tou bro 😘",
             "status": True
         }
     else:
-        data = DataModel(appname=appname, datajson=datajson, clientName=clientName)
+        data = DataModel(appname=dataModel.appname, datajson=dataModel.datajson, clientName=dataModel.clientName)
+       
         data = data.save()
         return {
             "message":"Thank tou bro 😘",
