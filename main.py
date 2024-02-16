@@ -5,7 +5,7 @@ import datetime
 import json
 app = FastAPI()
 from typing import Dict, Any
-connect('securedata', host="mongodb+srv://sahiljoya11:sahil1122@cluster0.syubkoh.mongodb.net/securedata")
+connect('xxxx', host="mongodb+srv://sahiljoya11:sahil1122@cluster0.syubkoh.mongodb.net/xxxx")
 
 class DataModel(Document):
     appname= StringField(required=True, max_length=200)
@@ -51,9 +51,9 @@ async def getData():
     fromjson = json.loads(data)
     return fromjson
 
-@app.get("/api/v1/search-data/{searchname}/{appname}")
-async def searchData(searchname: str, appname: str):
-    findquery = DataModel.objects(clientName=searchname, appname=appname).first()
-    tojson = findquery.to_json()
-    fromjson = json.loads(tojson)
-    return fromjson
+@app.get("/api/v1/search-data/{searchname}")
+async def searchData(searchname: str):
+    findquery = DataModel.objects(clientName=searchname).first()
+    # tojson = findquery.to_json()
+    # fromjson = json.loads(tojson)
+    return findquery
